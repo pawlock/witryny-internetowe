@@ -2,7 +2,7 @@
 # Pokédex
 ### Pokedéx with Nuxt 3 + Typescript + Tailwind
 
-## Commends
+## Commends for development
 - Install dependencies
 ``` bash
 yarn install
@@ -12,6 +12,20 @@ yarn install
  yarn dev
 ```
 
+
+## Commends for production
+- Install dependencies
+``` bash
+yarn install
+```
+- Build an application.
+``` bash
+ yarn build
+```
+- Start an application.
+``` bash
+ yarn start
+```
 ## Comments
 Application hosted at <a href="http://localhost:3000/">http://localhost:3000/</a>.
 ## References
