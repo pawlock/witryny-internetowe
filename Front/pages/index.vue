@@ -8,7 +8,7 @@
         <img src="/pokemon.svg" class="w-32" />
         <DarkMode @change="changeDarkMode" class="z-10"/>
       </header>
-      <div class="flex items-center justify-center text-not-that-higher">
+      <div class="flex items-center justify-center text-not-that-higher mt-6 sm:mt-0">
         <div class="relative isolate lg:px-8">
           <div  style="animation: circle 55s ease-in-out infinite;" class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-100" aria-hidden="true">
             <div v-if="!dark"  class=" relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff0000] to-[#ff0000] opacity-60 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)" />
@@ -21,7 +21,6 @@
           <div class="mx-auto max-w-2xl py-16 sm:py-24 lg:py-32">
             <div class="hidden sm:mb-8 sm:flex sm:justify-center" @click="rickRolled = !rickRolled">
               <div  class="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-600 ring-1 ring-gray-900/10 dark:ring-white-900 hover:ring-gray-900/20">
-                <!-- We are announcing the next round of financing our studies <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley" target="_blank" class="font-semibold text-red-600 dark:text-indigo-600"><span class="absolute inset-0" aria-hidden="true" />Pleas help <span aria-hidden="true">&rarr;</span></a> -->
                 We are announcing the next round of financing our studies <a href="#" target="" class="font-semibold text-red-600 dark:text-indigo-600"><span class="absolute inset-0" aria-hidden="true" />Pleas help <span aria-hidden="true">&rarr;</span></a>
               </div>
             </div>
@@ -33,7 +32,9 @@
                 <img  v-if="!dark" src="/img-pokeball-red.png" alt="" class="mx-auto">
               </div>
 
-              <p class="mt-6 text-higher text-lg leading-8 text-gray-600">Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet fugiat veniam occaecat fugiat aliqua.</p>
+              <p class="mt-6 text-higher text-lg leading-8 text-gray-600 dark:text-white dark:opacity-75">
+                Welcome to the ultimate companion for all Pokémon trainers! Our Pokédex app is your gateway to the fascinating world of Pokémon, providing you with a comprehensive and interactive digital Pokédex right at your fingertips.
+              </p>
               <div class="mt-10 text-higher flex items-center justify-center gap-x-6">
 
                 <div  style="animation: circle 75s ease-in-out infinite;"  class="absolute inset-y-0 left-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]" aria-hidden="true">
@@ -45,13 +46,14 @@
                   <div v-if="dark" class="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#4F46E5] to-[#fff] opacity-50 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]" style="clip-path: polygon(6% 4%, 0 73%, 25% 100%, 11% 27%, 75% 30%, 53% 86%, 40% 59%, 25% 100%, 84% 97%, 79% 5%);" />
                 </div>
                 <NuxtLink to="/pokemons">
-                  <a href="#" class="added-transition rounded-md bg-red-600 dark:bg-indigo-600 px-3.5 py-3.5 text-sm font-semibold hover:bottom-1 relative text-white shadow-sm hover:bg-red-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Get started</a>
+                  <a href="#" class="added-transition rounded-md bg-red-600  dark:bg-indigo-600 px-3.5 py-3.5 text-sm font-semibold hover:bottom-1 relative text-white shadow-sm hover:bg-red-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Get started</a>
                 </NuxtLink>
+                <a href="#"   class="added-transition rounded-md bg-transparent border-2 border-solid border-red-600 dark:border-indigo-600 px-3.5 py-3.5 text-sm dark:text-indigo-600 font-semibold hover:bottom-1 relative text-red-600 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Test for free</a>
 
                 <!-- <NuxtLink to="/pokemons"> -->
                   <!-- <a href="#" class="rounded-md bg-transparent px-3.5 py-2.5 text-sm font-semibold leading-6 text-gray-900  dark:text-white"> Try for free <span aria-hidden="true">→</span></a> -->
                   <!-- <a href="#" class="added-transition rounded-md border-2 border-red-600 dark:border-indigo-600 bg-transparent dark:bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold hover:bottom-1 relative leading-6 text-gray-900  dark:text-white"> Test for free<span aria-hidden="true">→</span></a> -->
-                  <a href="#"  class="text-red-500 bg-transparent border border-solid border-red-500 hover:bg-red-500 hover:text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" > Test for free<span aria-hidden="true">→</span></a>
+                  <!-- <a href="#"  class="text-red-500 bg-transparent border border-solid border-red-500 hover:bg-red-500 hover:text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" > Test for free<span aria-hidden="true">→</span></a> -->
                 <!-- </NuxtLink> -->
               </div>
             </div>
@@ -97,21 +99,34 @@
                 <!--header-->
                 <div class="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
                   <h3 class="text-3xl font-semibold  dark:text-gray-900">
-                   You get Rick Rolled
+                    You are Rickrolled 🕺🏼
                   </h3>
                 </div>
                 <!--body-->
-                <div class="rickVideo relative p-6 flex-auto">
-                  <iframe class="" width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ?controls=0?autoplay=1&enablejsapi=1&autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                <div class=" relative p-6 flex-auto">
+                  <iframe class="rickVideo" width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ?controls=0?autoplay=1&enablejsapi=1&autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                 </div>
-                <div class="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
-                  <button class="text-red-500 bg-transparent border border-solid border-red-500 hover:bg-red-500 hover:text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" @click="rickRolled = !rickRolled">
+                <!-- <div class="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
+                  <button @click="rickRolled = !rickRolled" class="text-red-500 bg-transparent border border-solid border-red-500 hover:bg-red-500 hover:text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button">
                     Close
                   </button>
-                </div>
+                </div> -->
               </div>
             </div>
           </div>
+
+          <!-- <div  v-if="rickRolled"  class="fixed inset-0 flex items-center justify-center z-50 top-0 left-0 w-full h-full">
+            <div class="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
+                  <h3 class="text-3xl font-semibold  dark:text-gray-900">
+                    You are Rickrolled 🕺🏼
+                  </h3>
+                </div>
+            <div class="bg-white rounded-lg p-4 shadow-lg">
+              <div class="relative pb-9/16">
+                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?controls=0&amp;autoplay=1&amp;enablejsapi=1&amp;autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+              </div>
+            </div>
+          </div> -->
           <div v-if="rickRolled" class="opacity-25 fixed inset-0 z-40 bg-black"></div>
     </section>
   </div>
@@ -208,16 +223,7 @@ body * {
 }
 
 .rickVideo{
-  position: relative;
-  width: 100%;
-  padding-bottom: 56.25%; 
-  height: 0;
-}
-.rickVideo iframe{
-  position: absolute;
-  top:0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+    aspect-ratio: 16 / 9 !important;
+    width: 100% !important;
 }
 </style>
