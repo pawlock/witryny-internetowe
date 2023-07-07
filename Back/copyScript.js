@@ -1,27 +1,42 @@
+const express = require('express');
+const app = express();
+app.use(express.json());
+const port = 3000;
+
+app.listen(port, () => { 
+  console.log(`Serwer działa na porcie: ${port}`) 
+});
+
+app.get('/', (req, res) => { res.send('Witaj w API!') });
+
 const { PrismaClient } = require(`@prisma/client`)
 const prisma = new PrismaClient()
 prisma.$connect()
 prisma.$disconnect()
 const urlRoot = 'https://pokeapi.co/api/v2/'
 
+
 main();
+// deleteAll()
 
 async function main() {
-  // await addPokemonTypeValues(); 
-  // await addPokemonAbilities();
-  // await addPokemonStats();
-  // await addPokemons();
-  // await addPokemonTypes();
-  // await addPokemonProperties();
-  // await addPokemonAbilitiesList();
+  console.log('WAIT FOR FINISH LOG it takes a while')
+
+  await addPokemonTypeValues(); 
+  await addPokemonAbilities();
+  await addPokemonStats();
+  await addPokemons();
+  await addPokemonTypes();
+  await addPokemonProperties();
+  await addPokemonAbilitiesList();
   await addPokemonStatsList();
+  await addPokemonTypeWeaknessesList();
 
   console.log('finished')
 }
 
 async function addPokemonTypeValues() {
   let data = await callApi('type/?limit=40')
-  //mapa bo u nas w bazie uzywamy tylko name na ten moment
   data = data.results.map(item => { return { name: item.name } });
   await addToDatabase('PokemonTypeValue', data);
 }
@@ -37,12 +52,21 @@ async function addPokemonStats() {
 }
 
 async function addPokemons() {
-  let data = await callApi('pokemon/?limit=1300');
-  data = data.results.map(item => { return { name: item.name } });
-  await addToDatabase('Pokemon', data);
+  let pokemons = await callApi('pokemon/?limit=1300');
+  let data;
+  let toCreate = [];
+
+  for(let pokemon of pokemons.results){
+    data = await callApi('pokemon/' + pokemon.name);
+    toCreate.push({
+      name: data.name,
+      sprite: data.sprites.other.dream_world.front_default || ''
+    })
+  }
+
+  await addToDatabase('Pokemon', toCreate);
 }
 
-// to dalo sie zrobic latwiej ale juz tak zrobilem i dziala jutro to ogarne najwyzej
 async function addPokemonTypes() {
   let pokemons = await getFromDatabase('Pokemon');
   let typeValues = await getFromDatabase('PokemonTypeValue');
@@ -52,14 +76,14 @@ async function addPokemonTypes() {
 
   for (let pokemon of pokemons) {
     data = await callApi('pokemon/' + pokemon.name);
-    data.types.pokemonId = data.id
+    data.types.pokemonName = pokemon.name
     listOfPokemontypes.push(data.types)
-  }
+}
 
   for (let pokemonType of listOfPokemontypes) {
-    pokemonType.forEach(item => {
+  pokemonType.forEach(item => {
       toCreate.push({
-        pokemonId: pokemonType.pokemonId,
+        pokemonId: pokemons.find(pokemon => pokemon.name == pokemonType.pokemonName).id,
         slot: item.slot,
         typeId: typeValues.find(value => value.name == item.type.name).id
       })
@@ -72,19 +96,24 @@ async function addPokemonTypes() {
 async function addPokemonProperties() {
   let pokemons = await getFromDatabase('Pokemon');
   let data;
+  let speciesData;
   let toCreate = [];
 
   for (let pokemon of pokemons) {
     data = await callApi('pokemon/' + pokemon.name);
+    try {
+      speciesData = await callApi('pokemon-species/' + pokemon.name);
+    } catch(e) {continue}
     toCreate.push({
       height: data.height,
       weight: data.weight,
-      description: "test",
+      description: `${speciesData.flavor_text_entries.find(item => item.language.name == "en")?.flavor_text || "it's a cool pokemon"}`,
       pokemonId: pokemons.find(pokemon => pokemon.name == data.name).id
     });
+    console.log(pokemon.id);
   }
 
-  addToDatabase('PokemonProperties', toCreate);
+  await addToDatabase('PokemonProperties', toCreate);
 }
 
 async function addPokemonAbilitiesList() {
@@ -104,8 +133,7 @@ async function addPokemonAbilitiesList() {
         pokemonId: pokemons.find(pokemon => pokemon.name == data.name).id
       });
     })
-
-    console.log(toCreate[toCreate.length - 1].pokemonId);
+    console.log(pokemon.id);
   }
   await addToDatabase('PokemonAbilitiesList', toCreate);
 }
@@ -127,10 +155,28 @@ async function addPokemonStatsList() {
         pokemonId: pokemons.find(pokemon => pokemon.name == data.name).id
       });
     })
-    console.log(toCreate[toCreate.length - 1].pokemonId);
+    console.log(pokemon.id);
   }
-  console.log(toCreate)
   await addToDatabase('PokemonStatsList', toCreate);
+}
+
+async function addPokemonTypeWeaknessesList(){
+  let types = await getFromDatabase('PokemonTypeValue');
+  let data;
+  let toCreate = [];
+
+  for (let type of types) {
+    data = await callApi('type/' + type.name + '/?limit=40');
+    data = data.damage_relations.double_damage_from;
+    data.forEach(relation =>{
+      toCreate.push({
+        typeId: type.id,
+        weakToId: types.find(item => item.name == relation.name).id
+      })
+    })
+    console.log(type.id);
+  }
+  await addToDatabase('PokemonWeaknessesList', toCreate);
 }
 
 async function callApi(api) {
@@ -151,4 +197,24 @@ async function addToDatabase(table, data) {
 
 async function getFromDatabase(table) {
   return await prisma[table].findMany();
+}
+
+async function deleteAll(){
+  await deleteAllFromDatabase('PokemonWeaknessesList');
+  await deleteAllFromDatabase('PokemonStatsList');
+  await deleteAllFromDatabase('PokemonStat');
+  await deleteAllFromDatabase('PokemonAbilitiesList');
+  await deleteAllFromDatabase('PokemonAbility');
+  await deleteAllFromDatabase('PokemonProperties');
+  await deleteAllFromDatabase('PokemonType');
+  await deleteAllFromDatabase('PokemonTypeValue');
+  await deleteAllFromDatabase('Pokemon');
+  console.log('finish')
+}
+
+async function deleteAllFromDatabase(table) {
+  try {
+    await prisma[table].deleteMany()
+    console.log('success')
+  } catch (e) { console.log(e) }
 }
