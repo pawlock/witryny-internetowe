@@ -1,0 +1,70 @@
+{
+  "name": "test",
+  "types": [
+    {
+      "slot": 1,
+      "type": {
+        "name": "normal"
+      }
+    }
+  ],
+  "sprites": {
+    "other":{
+      "dream_world":{
+        "front_default": "https://example.com" //obrazek
+      }
+    }
+  },
+  "species": {
+    "flavor_text_entries": [
+      {
+        "flavor_text": "about"
+      },
+      {
+        "flavor_text": "about"
+      },
+      {
+        "flavor_text": "about"
+      },
+      {
+        "flavor_text": "about"
+      },
+      {
+        "flavor_text": "about"
+      },
+      {
+        "flavor_text": "about"
+      },
+      {
+        "flavor_text": "about"
+      },
+      {
+        "flavor_text": "about"
+      }
+    ]
+  },
+  "height": 123,
+  "weight": 123,
+  "abilities": [
+    {
+      "ability": {
+        "name": "test",
+        "url": "https://example.com"
+      },
+      "is_hidden": true,
+      "slot": 1
+    }
+  ],
+  "weaknesses": "[] //do spytania natana",
+  "stats": [
+    {
+      "base_stat": 35,
+      "effort": 0,
+      "stat": {
+        "name": "hp",
+        "url": "https://pokeapi.co/api/v2/stat/1/"
+      }
+    }
+  ]
+  
+}
