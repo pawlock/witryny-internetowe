@@ -10,7 +10,7 @@ interface State {
   pokemon: any;
   species: any;
   weaknesses: any;
-  pokemons: any[];
+  pokemons: Pokemon[];
   favouritePokemons: any[];
   types: Types;
   typeSelected: string;
@@ -18,6 +18,35 @@ interface State {
   loading: boolean;
   darkMode: boolean;
 }
+
+interface Pokemon {
+  name: string;
+  id: number;
+  sprite: string;
+  types: Type[];
+}
+
+interface Type {
+  "id": number,
+  "slot": number,
+  "typeId": number,
+  "pokemonId": number,
+  type: {
+    "id": number,
+    name: string,
+    weaknesses: [{
+      "id": number,
+      "typeId": number,
+      "weakToId": number,
+      "type": {
+          "id": number,
+          "name": string
+      }
+    }]
+  }
+}
+
+
 
 function formatNumber(n: number): string {
   return `#${String("00" + n).slice(-3)}`;
@@ -64,14 +93,15 @@ export const usePokemonStore = defineStore("PokemonStore", {
     async get(): Promise<void> {
       try {
         const pokemon = await useApi.get(`/pokemon/${this.name.toLowerCase()}`);
-        const species = await useApi.get(pokemon.species.url);
-        const weaknesses = await useApi.get(pokemon.types[0].type.url);
+        const species = pokemon.properties.description;
+        const weaknesses = pokemon.types[0].type.weaknesses;
 
 
         this.pokemon = pokemon;
         this.species = species;
         this.weaknesses = weaknesses;
       } catch (e) {
+        console.log(e)
         this.reset();
       }
     },
@@ -79,10 +109,7 @@ export const usePokemonStore = defineStore("PokemonStore", {
       this.enableLoading();
       this.resetPokemons();
 
-      const { count, results } = await useApi.get(`/pokemon`, {
-        limit: this.addLimit(),
-        offset: 0,
-      });
+      const { count, results } = await useApi.get(`/pokemon`);
 
       this.setCount(count);
 
@@ -96,14 +123,15 @@ export const usePokemonStore = defineStore("PokemonStore", {
       this.enableLoading();
       this.resetPokemons();
 
-      const { pokemon: pokemonsOfType } = await useApi.get(
+      const { pokemonType: pokemonsOfType } = await useApi.get(
         `/type/${this.typeSelected}`
       );
 
       this.setCount(pokemonsOfType.length);
-
-      const pokemonsOfTypeFiltered = pokemonsOfType.slice(0, this.addLimit());
+      console.log('pokemonoftype',pokemonsOfType)
+      const pokemonsOfTypeFiltered = pokemonsOfType.slice(0, 10);
       for (const { pokemon: pokemonOfType } of pokemonsOfTypeFiltered) {
+        console.log("pokemon",pokemonOfType)
         const pokemon = await useApi.get(pokemonOfType.url);
 
         if (this.pokemonIsNotImage(pokemon)) continue;
@@ -120,8 +148,8 @@ export const usePokemonStore = defineStore("PokemonStore", {
         (a: any, b: any): number => a.order - b.order
       );
     },
-    pokemonIsNotImage({ sprites }: any): boolean {
-      return sprites.other.dream_world.front_default === null;
+    pokemonIsNotImage({ sprite }: any): boolean {
+      return sprite === null;
     },
     enableLoading(): void {
       this.loading = true;
@@ -169,12 +197,12 @@ export const usePokemonStore = defineStore("PokemonStore", {
     },
   },
   getters: {
-    getPokemons(): any {
-      return this.pokemons.map(({ name, id, sprites, types: t }) => {
+    getPokemons() {
+      return this.pokemons.map(({ name, id, sprite, types: t }) => {
         const code = formatNumber(id);
-        const types = t.map(({ type }: any) => type.name);
+        const types = t.map(({ type }) => type.name);
         const color = this.types[types[0]];
-        const image = sprites.other.dream_world.front_default;
+        const image = sprite;
 
         return {
           code,
@@ -186,11 +214,11 @@ export const usePokemonStore = defineStore("PokemonStore", {
       });
     },
     getFavouritePokemons(): any {
-      return this.favouritePokemons.map(({ name, id, sprites, types: t }) => {
+      return this.favouritePokemons.map(({ name, id, sprite, types: t }) => {
         const code = formatNumber(id);
         const types = t.map(({ type }: any) => type.name);
         const color = this.types[types[0]];
-        const image = sprites.other.dream_world.front_default;
+        const image = sprite;
 
         return {
           code,
@@ -222,7 +250,7 @@ export const usePokemonStore = defineStore("PokemonStore", {
     getImage(): string {
       if (this.pokemonEmpty) return "";
 
-      return this.pokemon.sprites.other.dream_world.front_default;
+      return this.pokemon.sprite;
     },
     getTypes(): string[] {
       if (this.pokemonEmpty) return [];
@@ -235,17 +263,17 @@ export const usePokemonStore = defineStore("PokemonStore", {
     getAbout(): string {
       if (this.pokemonEmpty) return "";
 
-      return this.species.flavor_text_entries[8].flavor_text;
+      return this.species;
     },
     getWeight(): string {
       if (this.pokemonEmpty) return "0 kg";
 
-      return `${this.pokemon.weight / 10} kg`;
+      return `${this.pokemon.properties.weight / 10} kg`;
     },
     getHeight(): string {
       if (this.pokemonEmpty) return "0 m";
 
-      return `${(this.pokemon.height / 10).toPrecision(2)} m`;
+      return `${(this.pokemon.properties.height / 10).toPrecision(2)} m`;
     },
     getAbilities(): string[] {
       if (this.pokemonEmpty) return [];
@@ -255,8 +283,8 @@ export const usePokemonStore = defineStore("PokemonStore", {
     getWeaknesses(): string[] {
       if (this.pokemonEmpty) return [];
 
-      return this.weaknesses.damage_relations.double_damage_from.map(
-        ({ name }: any) => name
+      return this.weaknesses.map(
+        ({ type }: any) => type.name
       );
     },
     getStats(): any {

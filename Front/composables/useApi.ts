@@ -4,11 +4,11 @@ interface RequestMethods {
 
 class Request implements RequestMethods {
   private _options = {
-    baseURL: "https://pokeapi.co/api/v2/",
+    baseURL: "http://localhost:2137",
   };
 
-  async get(url: string, params = {}): Promise<any> {
-    const { data, error } = await useFetch<Response>(url, {
+  async get<T extends object = any>(url: string, params = {}): Promise<T> {
+    const { data, error } = await useFetch<T>(url, {
       params,
       method: "GET",
       server: false,
@@ -16,9 +16,11 @@ class Request implements RequestMethods {
       ...this._options,
     });
 
-    if (error.value) throw new Error(`GET ${error.value}`);
+    if (!data)
+      throw new Error(`Can not load ${url}`);
 
-    return data.value;
+    console.log(data.value)
+    return (data.value as any);
   }
 }
 

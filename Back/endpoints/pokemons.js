@@ -5,14 +5,11 @@ const repository = require('../repository/pokemons.js')
 
 
 router.get('/', async (req, res) => {
-  const logic = await repository.getPokemons(req, res);
-  res.send(logic);
+  await repository.getPokemons(req, res);
 })
 
-router.get('/:id', async (req, res) => {
-  const userId = req.params.id
-  const logic = await repository.getPokemons(req, res);
-  res.send(logic);
+router.get('/:name', async (req, res) => {
+  await repository.getThisPokemon(req, res);
 })
 
 router.post('/', async (req, res) => {

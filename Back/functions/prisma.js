@@ -4,27 +4,27 @@ prisma.$connect()
 prisma.$disconnect()
 
 module.exports = {
-  async function getRecords(req) {
+  async getRecords(req) {
     const query = {}
   
     if (req.where) query.where = req.where;
     if (req.include) query.include = req.include;
+    if (req.select) query.select = req.select;
+    if (req.take) query.take = req.take;
   
     return await prisma[req.table].findMany(query);
-  }
-
-  async function upsertSingleRecord(table, record){
+  },
+  async upsertSingleRecord(table, record){
     try {
       await prisma[table].upsert({ 
-        where: record.Id || 0;,
+        where: record.Id || 0,
         create: record,
         update: record
       }) 
       return true
     } catch(e) { return false }
-  }
-
-  async function upsertRecords(table, data) {
+  },
+  async upsertRecords(table, data) {
     try {
       await prisma.$transaction(() => {
         data.map(async record => {
@@ -37,21 +37,19 @@ module.exports = {
       })
       return true;
     } catch (e) { return false }
-  }
-
-  async function updateSingleRecord(table, record){
+  },
+  async updateSingleRecord(table, record){
     try {
     const whereClause = {}
       await prisma[table].upsert({ 
-        where: record.params.id || 0;,
+        where: record.params.id || 0,
         create: record,
         update: record
       }) 
       return true
     } catch(e) {return false }
-  }
-
-  async function deleteSingleRecord(table, id){
+  },
+  async deleteSingleRecord(table, id){
     try{
       await prisma[table].delete({
         where: { Id: id }

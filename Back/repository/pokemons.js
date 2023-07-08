@@ -2,8 +2,17 @@ const prisma = require('../functions/prisma.js')
 
 module.exports = {
   async getPokemons(req, res) {
-    const database = await prisma.getRecords({ where: { Id: req.body.Id }, table: 'Pokemon', include: { Type: true } })
-    res.status(200).json({ response: database });
+    const database = await prisma.getRecords({table: 'Pokemon', select: { name: true }, take: 1})
+    for (const object of database) {
+      object.url = `http://localhost:2137/pokemon/${object.name}`
+    }
+    const count = database.length;
+    res.status(200).json({ count: count, results: database});
+  },
+  
+  async getThisPokemon(req, res) {
+    const database = await prisma.getRecords({ where: { name: req.params.name }, table: 'Pokemon', include: { types: { include: {type:{ include: {weaknesses: {include:{type:true}}}}}}, properties: true, abilities: { include: {ability:true}}, stats: { include: {stat:true}} } })
+    res.status(200).json(database[0]);
   },
 
   async addPokemons(req, res) {

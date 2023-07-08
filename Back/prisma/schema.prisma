@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgres://nbwjgeyq:aQkRDE81Dltg0nLKIPRmIMTkqdEWkhiS@hattie.db.elephantsql.com/nbwjgeyq"
 }
 
 model Pokemon {
@@ -17,6 +17,7 @@ model Pokemon {
   properties PokemonProperties?
   abilities PokemonAbilitiesList[]
   stats PokemonStatsList[]
+  sprite String
 }
 
 model PokemonType {
@@ -32,6 +33,8 @@ model PokemonTypeValue {
   id Int @id @default(autoincrement())
   name String
   pokemonType PokemonType[]
+  type PokemonWeaknessesList[]          @relation("PokemonTypeValues")
+  weaknesses PokemonWeaknessesList[]    @relation("PokemonWeaknessValues")
 }
 
 model PokemonProperties {
@@ -75,4 +78,12 @@ model PokemonStat {
   statsList PokemonStatsList[]
   name String
   url String
+}
+
+model PokemonWeaknessesList{
+  id Int @id @default(autoincrement())
+  typeId Int
+  type PokemonTypeValue @relation("PokemonTypeValues", fields: [typeId], references: [id])
+  weakToId Int
+  weakTo PokemonTypeValue @relation("PokemonWeaknessValues", fields: [weakToId], references: [id])
 }
