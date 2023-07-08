@@ -8,3 +8,5 @@ node_modules
 dist
 .fleet
 .idea
+.DS_Store
+package-lock.json

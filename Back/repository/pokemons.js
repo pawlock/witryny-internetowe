@@ -2,7 +2,7 @@ const prisma = require('../functions/prisma.js')
 
 module.exports = {
   async getPokemons(req, res) {
-    const database = await prisma.getRecords({table: 'Pokemon', select: { name: true }, take: 1})
+    const database = await prisma.getRecords({table: 'Pokemon', select: { name: true }})
     for (const object of database) {
       object.url = `http://localhost:2137/pokemon/${object.name}`
     }
@@ -15,11 +15,7 @@ module.exports = {
     res.status(200).json(database[0]);
   },
 
-  async addPokemons(req, res) {
-    // if (!req.body.Name) res.status(400).json({ error: "Musisz podac imie uzytkownika" });
-    // if (!req.body.Surname) res.status(400).json({ error: "Musisz podac Nazwisko uzytkownika" });
-
-    // await prisma.upsertRecords('User', req.body) ?
+  async addPokemon(req, res) {
     await upsertSingleRecord('Pokemon', req.body) ?
       res.status(200).json({ response: "Udalo sie dodac uzytkownika" }) :
       res.status(400).json({ error: "Nie udalo sie dodac uzytkownika" })

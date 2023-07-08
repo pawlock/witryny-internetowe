@@ -85,7 +85,7 @@ export const usePokemonStore = defineStore("PokemonStore", {
       water: "#379cfa",
     },
     typeSelected: "all",
-    limit: 28,
+    limit: 10,
     loading: false,
     darkMode: false,
   }),
@@ -101,7 +101,6 @@ export const usePokemonStore = defineStore("PokemonStore", {
         this.species = species;
         this.weaknesses = weaknesses;
       } catch (e) {
-        console.log(e)
         this.reset();
       }
     },
@@ -110,10 +109,10 @@ export const usePokemonStore = defineStore("PokemonStore", {
       this.resetPokemons();
 
       const { count, results } = await useApi.get(`/pokemon`);
-
+      const resultsFiltered = results.slice(0, this.addLimit());
       this.setCount(count);
 
-      for (const { url } of results) {
+      for (const { url } of resultsFiltered) {
         this.pokemons.push(await useApi.get(url));
       }
 
@@ -128,10 +127,8 @@ export const usePokemonStore = defineStore("PokemonStore", {
       );
 
       this.setCount(pokemonsOfType.length);
-      console.log('pokemonoftype',pokemonsOfType)
-      const pokemonsOfTypeFiltered = pokemonsOfType.slice(0, 10);
+      const pokemonsOfTypeFiltered = pokemonsOfType.slice(0, this.addLimit());
       for (const { pokemon: pokemonOfType } of pokemonsOfTypeFiltered) {
-        console.log("pokemon",pokemonOfType)
         const pokemon = await useApi.get(pokemonOfType.url);
 
         if (this.pokemonIsNotImage(pokemon)) continue;
@@ -158,7 +155,7 @@ export const usePokemonStore = defineStore("PokemonStore", {
       this.loading = false;
     },
     addLimit(): number {
-      return (this.limit += 28);
+      return (this.limit += 10);
     },
     setCount(count: number): void {
       this.count = count;
@@ -197,7 +194,7 @@ export const usePokemonStore = defineStore("PokemonStore", {
     },
   },
   getters: {
-    getPokemons() {
+    getPokemons(): any {
       return this.pokemons.map(({ name, id, sprite, types: t }) => {
         const code = formatNumber(id);
         const types = t.map(({ type }) => type.name);

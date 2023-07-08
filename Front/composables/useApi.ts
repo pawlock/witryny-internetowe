@@ -19,7 +19,6 @@ class Request implements RequestMethods {
     if (!data)
       throw new Error(`Can not load ${url}`);
 
-    console.log(data.value)
     return (data.value as any);
   }
 }

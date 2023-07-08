@@ -5,18 +5,15 @@ const repository = require('../repository/favourites.js')
 
 
 router.get('/', async (req, res) => {
-  const logic = await repository.getFavourites(req, res);
-  res.send(logic);
+  await repository.getFavourites(req, res);
 })
 
 router.post('/', async (req, res) => {
-  const logic = await repository.addFavourite(req, res);
-  res.send(logic);
+  await repository.addFavourite(req, res);
 })
 
 router.delete('/:id', async (req, res)=>{
-  const logic = await repository.deleteFavourite(req, res);
-  res.send(logic);
+  await repository.deleteFavourite(req, res);
 })
 
 module.exports = router;

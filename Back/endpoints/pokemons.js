@@ -13,18 +13,15 @@ router.get('/:name', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-  const logic = await repository.addPokemon(req, res);
-  res.send(logic);
+  await repository.addPokemon(req, res);
 })
 
 router.patch('/:id', async (req, res) =>{
-  const logic = await repository.updatePokemon(req, res);
-  res.send(logic);
+  await repository.updatePokemon(req, res);
 })
 
 router.delete('/:id', async (req, res)=>{
-  const logic = await repository.deletePokemon(req, res);
-  res.send(logic);
+  await repository.deletePokemon(req, res);
 })
 
 module.exports = router;
