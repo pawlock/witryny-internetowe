@@ -1,4 +1,4 @@
-![Pokédex](./public/thumb.png)
+![Pokédex](./Front/public/thumb.png)
 # Pokédex
 ### Frontend: Pokedéx with Nuxt 3 + Typescript + Tailwind
 
