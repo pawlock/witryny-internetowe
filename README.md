@@ -52,3 +52,14 @@ npm install
 ```
 ## Comments
 Application hosted at <a href="http://localhost:2137/">http://localhost:2137/</a>.
+
+### Infrastructure: AWS deployed by terraform
+
+## Commands
+```bash
+terraform init
+terraform apply
+```
+
+## Comments
+Application is already hosted on: <a href="uvwer.pl">uvwer.pl</a>.

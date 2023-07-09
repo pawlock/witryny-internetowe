@@ -28,11 +28,23 @@ module "loadbalancer" {
 }
 
 module "route53" {
+  source = "../modules/route53"
   domain_name       = var.domain
   target_zone_id    = module.loadbalancer.zone_id
   target_dns_name   = module.loadbalancer.dns_name
 }
 
 module "ecs" {
-    
+    source = "../modules/ecs"
+
+    container_link_1 = "${module.ecr.link}:backend:latest"
+    container_link_2 = "${module.ecr.link}:frontend:latest"
+
+    ports = ["3000","2137"]
+}
+
+module "ecr" {
+    source = "../modules/ecr"
+
+    name = "cdv-project-repo"
 }
